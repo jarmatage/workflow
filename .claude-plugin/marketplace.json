@@ -1,0 +1,12 @@
+{
+  "name": "workflows",
+  "description": "Lightweight project management workflow for Claude Code",
+  "owner": { "name": "jarmatage" },
+  "plugins": [
+    {
+      "name": "workflows",
+      "source": "./",
+      "description": "Roadmap, phase plans, inline builds with one fresh-context review, and on-disk state that survives new sessions"
+    }
+  ]
+}
