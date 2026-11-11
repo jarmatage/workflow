@@ -119,7 +119,9 @@ project stale git && roadmap && phase "" " " " " " "
 git add -A && git commit -q -m plan
 git branch phase/02-cli
 run; exits0
-has "has the branch 'phase/02-cli' but you are on 'main'"
+has "being built on the branch 'phase/02-cli', not here"
+has "Continue: /workflows:build"
+lacks "Planned, not started"
 
 case_name="all tasks ticked"
 project ticked git && roadmap
@@ -135,6 +137,17 @@ git checkout -q -b phase/02-cli
 git add -A && git commit -q -m "close out"
 run; exits0
 has "Still on the finished phase's branch 'phase/02-cli'"
+
+case_name="closed out on its branch, back on the unmerged base"
+project unmerged-base git && roadmap && phase "" " " " " " "
+git add -A && git commit -q -m plan
+git checkout -q -b phase/02-cli
+git rm -q .planning/phase-02-cli.md && git commit -q -m "close out"
+git checkout -q main
+run; exits0
+has "Phase 2: CLI was built and closed out on the branch 'phase/02-cli', which is not merged here"
+lacks "Planned, not started"
+lacks "/workflows:build"
 
 case_name="every phase done"
 project alldone git
@@ -153,12 +166,28 @@ case_name="two phase files"
 project two && roadmap && phase "" " " " " " "
 cp .planning/phase-02-cli.md .planning/phase-03-docs.md
 run; exits0
-has "More than one phase file"
+has "Active: Phase 2: CLI, plan in .planning/phase-02-cli.md"
+has "2 phase files in .planning/, but only one phase may be open"
 
 # Budgets: the point of this plugin is to stay small. A session pays for the
 # hook's output every time it starts, and for a skill each time it is invoked.
 case_name="status output budget"
-cd "$tmp/mid" && run
+project worst git && roadmap
+long=$(printf '%0200d' 0)
+slug=a-phase-slug-of-thirty-chars-x
+git checkout -q -b "phase/02-$slug"
+phase abc1234 x " " " "
+{
+  echo "# Phase 2: $long"
+  sed -e 1d -e "s/^- \\[ \\] 2\\. .*/- [ ] 2. $long/" .planning/phase-02-cli.md
+  printf '\n## Handoff\n- half written\n'
+} >".planning/phase-02-$slug.md"
+mv .planning/phase-02-cli.md .planning/phase-03-docs.md
+run; exits0
+has "1/3 tasks done. Next: 2. 000"
+has "2 phase files"
+has "uncommitted paths"
+has "Handoff section"
 bytes=$(printf '%s' "$out" | wc -c | tr -d ' ')
 [ "$bytes" -le 700 ] && ok || fail "status is $bytes bytes, budget 700"
 

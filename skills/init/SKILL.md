@@ -11,7 +11,9 @@ Request: $ARGUMENTS
 
 If `.planning/ROADMAP.md` exists, this is a revision: apply the request to the
 open phases and the backlog (add, split, reorder, drop), leave finished phases
-alone, show the result, and commit it once approved. Otherwise:
+alone, show the result, and commit it once approved. A phase that has a
+`.planning/phase-*.md` file keeps its number: the file and its branch are
+named after it. Otherwise:
 
 ## 1. Learn what exists
 

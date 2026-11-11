@@ -25,8 +25,10 @@ The phase's branch is named after its file: `phase-02-cli.md` is built on
 
 For each task in order: implement it, verify it with the narrowest command in
 the project's `CLAUDE.md` that covers it, tick it in the phase file, and commit
-the code and the phase file together: a later session has only that file to
-go on.
+the code and the phase file together.
+
+Task 1's tests stay red until later tasks pass them; never skip or weaken
+them to quiet the gate.
 
 Work through the whole phase without checking in. When the plan is wrong or
 silent, decide and carry on.
@@ -52,7 +54,7 @@ publish, merge), or when the plan is wrong enough to need replanning.
 ## Review
 
 When every task is ticked, run the project's full gate. Then give one
-general-purpose agent, which starts with a fresh context, this brief:
+general-purpose agent this brief:
 
 > Review a finished phase. Report; do not edit. Read `<phase file>` for its
 > `Done when` checks, decisions and findings, and read the change with
@@ -71,9 +73,9 @@ the design.
 
 1. In `.planning/ROADMAP.md`, tick the phase and replace its `Done when` lines with an indented `As built:` note of three to five lines: what now exists, where it departs from the plan, what was deferred. Deferred items also go to the Backlog.
 2. Carry what outlives the phase into `.planning/PROJECT.md`, keeping each line's basis: the phase's decisions and `Decided` lines into `## Decisions`, the other findings into `## Findings`. Where one contradicts or narrows a line already there, including a decision's stated reason, rewrite that line so the file never disagrees with itself.
-3. Delete the phase file (git keeps it) and commit.
+3. Delete the phase file and commit.
 4. Report what was built, what you decided, and what you did about each review point.
 5. Propose at most three gotchas for the project's `CLAUDE.md`: things that cost time here and that no tool enforces. Add only those the user accepts.
-6. Ask whether to merge the branch. Do not merge or push unasked.
+6. Ask whether to merge the branch.
 
 Next: `/clear`, then `/workflows:plan`.

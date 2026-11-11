@@ -48,18 +48,32 @@ if [ ! -f "$1" ]; then
 fi
 
 plan=$1
-[ $# -gt 1 ] && say "More than one phase file ($*); using $plan."
-title=$(sed -n '1s/^# *//p' "$plan")
+# The title and the task are clipped to keep the whole status inside its budget.
+title=$(sed -n '1s/^# *//p' "$plan" | cut -c1-60)
 tasks=$(count '^- \[[ xX]\] ' "$plan")
 ticked=$(count '^- \[[xX]\] ' "$plan")
-next=$(sed -n '/^- \[ \] /{s///p;q;}' "$plan" | cut -c1-160)
+next=$(sed -n '/^- \[ \] /{s///p;q;}' "$plan" | cut -c1-100)
 base=$(sed -n 's/^Base: *//p' "$plan" | head -n 1)
 stem=${plan##*/phase-}
 branch=phase/${stem%.md}
 
+# The phase's branch exists and this is not it: the phase file here is the copy
+# from before the build started, so its ticks and `Base:` say nothing.
+elsewhere=""
+if [ -n "$in_git" ] && [ "$current" != "$branch" ] && git show-ref --verify --quiet "refs/heads/$branch"; then
+  if ! git cat-file -e "$branch:./$plan" 2>/dev/null; then
+    say "$title was built and closed out on the branch '$branch', which is not merged here: merge it before going on."
+    exit 0
+  fi
+  elsewhere=1
+fi
+
 say "$closed/$total phases done (.planning/ROADMAP.md). Active: $title, plan in $plan"
+[ $# -gt 1 ] && say "$# phase files in .planning/, but only one phase may be open; showing the first."
 say "$settled"
-if [ -z "$base" ]; then
+if [ -n "$elsewhere" ]; then
+  say "This phase is being built on the branch '$branch', not here: its progress is there."
+elif [ -z "$base" ]; then
   say "Planned, not started ($tasks tasks)."
 elif [ -n "$next" ]; then
   say "$ticked/$tasks tasks done. Next: $next"
@@ -68,9 +82,6 @@ else
 fi
 
 if [ -n "$in_git" ]; then
-  if [ "$current" != "$branch" ] && git show-ref --verify --quiet "refs/heads/$branch"; then
-    say "This phase has the branch '$branch' but you are on '${current:-a detached HEAD}': the status above is stale until you switch."
-  fi
   dirty=$(git status --porcelain 2>/dev/null | wc -l | tr -d ' ')
   [ "$dirty" -gt 0 ] && say "$dirty uncommitted paths."
 fi
