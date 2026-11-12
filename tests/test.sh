@@ -72,12 +72,12 @@ run; exits0
 case_name="roadmap without a plan"
 project noplan git && roadmap
 run; exits0
-has "1/3 phases done"
+has "[workflow] 1/3 phases done"
 has "Next: 2. CLI - run it from a shell"
 has "Settled decisions and findings: .planning/PROJECT.md"
-has "/workflows:plan"
+has "/workflow:plan"
 lacks "Done when"
-lacks "/workflows:build"
+lacks "/workflow:build"
 
 case_name="works outside git"
 project nogit && roadmap && phase "" " " " " " "
@@ -91,7 +91,7 @@ project planned git && roadmap && phase "" " " " " " "
 git add -A && git commit -q -m plan
 run; exits0
 has "Planned, not started (3 tasks)"
-has "Continue: /workflows:build"
+has "Continue: /workflow:build"
 lacks "uncommitted"
 lacks "stale"
 
@@ -120,7 +120,7 @@ git add -A && git commit -q -m plan
 git branch phase/02-cli
 run; exits0
 has "being built on the branch 'phase/02-cli', not here"
-has "Continue: /workflows:build"
+has "Continue: /workflow:build"
 lacks "Planned, not started"
 
 case_name="all tasks ticked"
@@ -147,7 +147,7 @@ git checkout -q main
 run; exits0
 has "Phase 2: CLI was built and closed out on the branch 'phase/02-cli', which is not merged here"
 lacks "Planned, not started"
-lacks "/workflows:build"
+lacks "/workflow:build"
 
 case_name="every phase done"
 project alldone git

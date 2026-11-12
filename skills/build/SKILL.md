@@ -7,7 +7,7 @@ disable-model-invocation: true
 # Build the active phase
 
 The active phase is the `.planning/phase-*.md` file. If there is none, stop
-and suggest `/workflows:plan`.
+and suggest `/workflow:plan`.
 
 ## Start or resume
 
@@ -28,7 +28,7 @@ the project's `CLAUDE.md` that covers it, tick it in the phase file, and commit
 the code and the phase file together.
 
 Task 1's tests stay red until later tasks pass them; never skip or weaken
-them to quiet the gate.
+them, or bypass a commit hook, to quiet the gate.
 
 Work through the whole phase without checking in. When the plan is wrong or
 silent, decide and carry on.
@@ -78,4 +78,4 @@ the design.
 5. Propose at most three gotchas for the project's `CLAUDE.md`: things that cost time here and that no tool enforces. Add only those the user accepts.
 6. Ask whether to merge the branch.
 
-Next: `/clear`, then `/workflows:plan`.
+Next: `/clear`, then `/workflow:plan`.

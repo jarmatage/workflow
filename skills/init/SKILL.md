@@ -11,9 +11,9 @@ Request: $ARGUMENTS
 
 If `.planning/ROADMAP.md` exists, this is a revision: apply the request to the
 open phases and the backlog (add, split, reorder, drop), leave finished phases
-alone, show the result, and commit it once approved. A phase that has a
-`.planning/phase-*.md` file keeps its number: the file and its branch are
-named after it. Otherwise:
+alone, show the result, and commit it on the current branch once approved. A
+phase that has a `.planning/phase-*.md` file keeps its number: the file and
+its branch are named after it. Otherwise:
 
 ## 1. Learn what exists
 
@@ -90,9 +90,10 @@ Keep phase lines in exactly that shape; the session-start status reads them.
 
 ## 4. Approve and commit
 
-Show the roadmap and revise it until it is approved, then commit `.planning/`.
+Show the roadmap and revise it until it is approved, then commit `.planning/`
+on the current branch.
 If the repository has no commits yet, commit the existing tree first, as its
 own commit, so that phases have a base. If this is not a git repository, ask
 before running `git init`.
 
-Next: `/workflows:plan`.
+Next: `/workflow:plan`.

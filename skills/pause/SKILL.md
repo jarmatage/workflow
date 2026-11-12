@@ -25,5 +25,5 @@ working tree and name those files in the handoff. If a stop hook then reports
 the project's gate failing on that half-finished work, answer that the pause
 is deliberate instead of starting to fix it.
 
-The next session's status line points at the handoff, and `/workflows:build`
+The next session's status line points at the handoff, and `/workflow:build`
 reads it and removes it.

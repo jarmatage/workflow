@@ -12,7 +12,7 @@ cd "${CLAUDE_PROJECT_DIR:-.}" 2>/dev/null || exit 0
 road=.planning/ROADMAP.md
 [ -f "$road" ] || exit 0
 
-say() { printf '[workflows] %s\n' "$*"; }
+say() { printf '[workflow] %s\n' "$*"; }
 count() { grep -cE "$1" "$2" 2>/dev/null; }
 # Shown whenever work remains, so that a session that never invokes a skill
 # still knows where earlier conclusions are before it repeats the work.
@@ -34,10 +34,10 @@ if [ ! -f "$1" ]; then
   if [ -n "$next" ]; then
     say "$closed/$total phases done (.planning/ROADMAP.md). Next: $next"
     say "$settled"
-    say "It has no plan yet: /workflows:plan"
+    say "It has no plan yet: /workflow:plan"
   elif [ "$total" -gt 0 ]; then
     backlog=$(awk '/^## Backlog/{f=1;next} /^## /{f=0} f&&/^- /{n++} END{print n+0}' "$road")
-    say "All $total phases in .planning/ROADMAP.md are done; $backlog backlog items. Add phases with /workflows:init."
+    say "All $total phases in .planning/ROADMAP.md are done; $backlog backlog items. Add phases with /workflow:init."
   else
     say ".planning/ROADMAP.md has no phase lines of the form '- [ ] 1. Name - goal'."
   fi
@@ -88,5 +88,5 @@ fi
 if grep -q '^## Handoff' "$plan"; then
   say "The plan ends with a Handoff section from the last session: read it first."
 fi
-say "Continue: /workflows:build"
+say "Continue: /workflow:build"
 exit 0

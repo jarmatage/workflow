@@ -60,13 +60,14 @@ A plan records the decisions the implementer could not make alone: which
 files, the names and signatures that tasks share, exact values, the order. It
 holds no code bodies and nothing the project's `CLAUDE.md` already says.
 
-- Task 1 turns the `Done when` checks into failing tests in the project's own suite. For a check that cannot be automated, say how it will be shown by hand.
+- Task 1 turns the `Done when` checks into failing tests in the project's own suite, with a stub for each name they need that does not exist yet: they must fail when run, not in the lint and type checks that commit hooks apply. For a check that cannot be automated, say how it will be shown by hand.
 - Every later task ends in something testable and is one commit.
 - Three to eight tasks. If the phase needs more, or will not fit one session, split it in the roadmap and plan the first part.
 
 ## 4. Approve
 
 Summarise the plan in a few lines and point to the file. Revise it until it is
-approved, then commit it. Do not start building: suggest `/clear` and then
-`/workflows:build`, so that the build starts from the plan and not from this
+approved, then commit it on the current branch; the build creates the phase's
+branch from that commit. Do not start building: suggest `/clear` and then
+`/workflow:build`, so that the build starts from the plan and not from this
 conversation.

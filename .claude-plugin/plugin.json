@@ -1,5 +1,5 @@
 {
-  "name": "workflows",
+  "name": "workflow",
   "version": "0.1.0",
   "description": "Lightweight project management for Claude Code: a roadmap, one plan per phase, inline builds with a fresh-context review, and state on disk so any new session can continue.",
   "author": { "name": "jarmatage" },

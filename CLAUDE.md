@@ -1,4 +1,4 @@
-# workflows
+# workflow
 
 A Claude Code plugin: four slash-only skills and one `SessionStart` hook that
 manage a project through files in its `.planning/` directory.
@@ -25,6 +25,10 @@ A change to a skill's wording also needs a real run: start
   `tests/test.sh` together.
 - The finding prefixes (`Decided`, `Verified`, `Invalidated`, `Matters`) are
   spelled out in `init`, `plan` and `build`. Change them in all three.
+- `init` and `plan` say to commit "on the current branch" because Claude Code
+  tells a session on the default branch to branch before committing. Without
+  those words a real run of `plan` committed the plan to a stray branch, where
+  neither `build` nor the hook looks for it.
 - Size is the product. Tests fail a skill over 4000 bytes or a status output
   over 700. Before adding a sentence, ask whether a current model would get
   it wrong without being told; if not, leave it out.

@@ -11,9 +11,9 @@ test:
 validate:
     claude plugin validate .
 
-# Show what the plugin costs in context: bytes per skill and for the status line
+# Show what invoking each skill costs in context, in bytes
 budget:
-    @wc -c skills/*/SKILL.md hooks/state.sh
+    @wc -c skills/*/SKILL.md
 
 # The gate: everything that must pass before work is done
 check: test validate

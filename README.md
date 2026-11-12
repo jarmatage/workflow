@@ -1,4 +1,4 @@
-# workflows
+# workflow
 
 A Claude Code plugin for lightweight project management: a roadmap, one plan
 per phase, inline builds that end in a fresh-context review, and state kept in
@@ -10,17 +10,17 @@ navigation to the project.
 
 ## Use
 
-```
-/plugin marketplace add <path-or-git-url-of-this-repository>
-/plugin install workflows@workflows
+```claude
+/plugin marketplace add jarmatage/workflow
+/plugin install workflow@workflow
 ```
 
 | Command | What it does |
 | --- | --- |
-| `/workflows:init [idea]` | Interviews you, then writes the project brief and a roadmap of phases. On an existing codebase it maps the code first. Run it again later to revise the roadmap. |
-| `/workflows:plan [phase]` | Settles the open decisions for the next phase with you, then writes its plan and waits for approval. |
-| `/workflows:build` | Builds the planned phase task by task on its own branch, has a fresh-context agent review it, and closes it out. Also resumes a phase in progress. |
-| `/workflows:pause` | Records what a later session could not work out from the plan and git. |
+| `/workflow:init [idea]` | Interviews you, then writes the project brief and a roadmap of phases. On an existing codebase it maps the code first. Run it again later to revise the roadmap. |
+| `/workflow:plan [phase]` | Settles the open decisions for the next phase with you, then writes its plan and waits for approval. |
+| `/workflow:build` | Builds the planned phase task by task on its own branch, has a fresh-context agent review it, and closes it out. Also resumes a phase in progress. |
+| `/workflow:pause` | Records what a later session could not work out from the plan and git. |
 
 The loop is `plan`, `/clear`, `build`, `/clear`, repeat. You approve each phase
 plan; the build then runs to the end of the phase without checking in.
@@ -58,9 +58,9 @@ did. Each thing a session needs to know has one home:
 Findings are written while the work happens, one line each, and every line
 carries its basis so that it can be trusted without redoing the work:
 
-```
+```text
 - Decided: one exit code for every failure - simplest for scripts - phase 2 may want to continue past a bad file
-- Verified: str.split() treats U+00A0 as whitespace - `len('a b'.split())` is 2 on Python 3.14.4
+- Verified: str.split() treats U+00A0 as whitespace - `len('a\xa0b'.split())` is 2 on Python 3.14.4
 - Invalidated: PROJECT.md says counts match `wc -w` - they differ on 0x1C-0x1F - `printf 'a\x1cb' | wc -w` is 1
 - Matters: tests import the module from the repository root - run them from there
 ```
@@ -77,20 +77,20 @@ If you settle something outside the workflow, ask Claude to record it in
 A `SessionStart` hook prints the project's position at the start of every
 session, including after `/clear` and after compaction:
 
-```
-[workflows] 1/3 phases done (.planning/ROADMAP.md). Active: Phase 2: CLI, plan in .planning/phase-02-cli.md
-[workflows] Settled decisions and findings: .planning/PROJECT.md. Check it before re-deciding or re-verifying.
-[workflows] 1/3 tasks done. Next: 2. Argument parser - src/tool/cli.py; provides main(argv) -> int
-[workflows] 1 uncommitted paths.
-[workflows] Continue: /workflows:build
+```text
+[workflow] 1/3 phases done (.planning/ROADMAP.md). Active: Phase 2: CLI, plan in .planning/phase-02-cli.md
+[workflow] Settled decisions and findings: .planning/PROJECT.md. Check it before re-deciding or re-verifying.
+[workflow] 1/3 tasks done. Next: 2. Argument parser - src/tool/cli.py; provides main(argv) -> int
+[workflow] 1 uncommitted paths.
+[workflow] Continue: /workflow:build
 ```
 
 It prints nothing in a project without `.planning/ROADMAP.md`.
 
 There is no separate handoff step in the normal case. Each task is ticked in
 the phase file in the same commit as its code, so the file is always current.
-`/workflows:build` in a new session continues from the first unticked task.
-`/workflows:pause` is for stopping in the middle of a task: it brings the
+`/workflow:build` in a new session continues from the first unticked task.
+`/workflow:pause` is for stopping in the middle of a task: it brings the
 findings up to date and notes the next step.
 
 ## How a phase is built
@@ -121,9 +121,15 @@ from the templates, provided their `CLAUDE.md` names those commands.
 State is kept in `.planning/` and not `docs/` because the Python templates
 build everything under `docs/` into the documentation site.
 
-One interaction to know about: the templates' stop hook runs `just check`
-whenever the tree has changed. If you pause with half-finished code that fails
-the gate, the hook hands the failure back up to three times before giving up.
+Two interactions to know about:
+
+- The templates' stop hook runs `just check` whenever the tree has changed. If
+  you pause with half-finished code that fails the gate, the hook hands the
+  failure back up to three times before giving up.
+- The templates' commit hooks run the format, lint and type checks, but not
+  the tests. A phase's first commit holds tests for code that does not exist
+  yet, so the plan gives that task stubs to keep those checks passing, and the
+  build never bypasses a commit hook.
 
 ## What it costs in context
 
@@ -131,7 +137,7 @@ the gate, the hook hands the failure back up to three times before giving up.
 | --- | --- |
 | Every session, unmanaged project | Nothing. The skills are slash-only, so not even their descriptions are loaded. |
 | Every session, managed project | The status lines: under 700 bytes. |
-| Invoking a skill | That skill's text: 1.1 to 4 KB each, 11.2 KB for all four. |
+| Invoking a skill | That skill's text: 1.1 to 4 KB each, 11.5 KB for all four. |
 
 `just test` enforces these budgets: 700 bytes for the status, 4000 per skill.
 
